@@ -1,6 +1,7 @@
 var React = require('react');
 var Search = require('./Children/Search');
 var Saved = require('./Children/Saved');
+var helpers = require('./utils/helpers');
 
 var Main = React.createClass({
 

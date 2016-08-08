@@ -19739,6 +19739,7 @@
 	var React = __webpack_require__(1);
 	var Search = __webpack_require__(160);
 	var Saved = __webpack_require__(161);
+	var helpers = __webpack_require__(162);
 
 	var Main = React.createClass({
 		displayName: 'Main',
@@ -19788,77 +19789,100 @@
 /* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
+	var helpers = __webpack_require__(162);
 
 	var Search = React.createClass({
-		displayName: "Search",
+		displayName: 'Search',
 
+
+		getInitialState: function getInitialState() {
+			return {
+				search_topic: '',
+				start_year: '',
+				end_year: ''
+			};
+		},
+
+		changedData: function changedData(event) {
+
+			// resetting the state each time the user changes something in any of the inputs by setting teh id of the inputs to be the same as the key in the returned state object
+			var key_state = event.target.id;
+			this.setState({ key_state: event.target.value });
+		},
+
+		queryData: function queryData(event) {
+
+			event.preventDefault();
+
+			helpers.searchNYT(this.state.search_topic, this.state.start_year, this.state.end_year);
+		},
 
 		render: function render() {
 
 			return React.createElement(
-				"div",
-				{ className: "container" },
+				'div',
+				{ className: 'container' },
 				React.createElement(
-					"div",
-					{ className: "row" },
+					'div',
+					{ className: 'row' },
 					React.createElement(
-						"div",
-						{ className: "col-md-12" },
+						'div',
+						{ className: 'col-md-12' },
 						React.createElement(
-							"div",
-							{ className: "panel panel-default" },
+							'div',
+							{ className: 'panel panel-default' },
 							React.createElement(
-								"div",
-								{ className: "panel-heading" },
+								'div',
+								{ className: 'panel-heading' },
 								React.createElement(
-									"h2",
+									'h2',
 									null,
-									"Search"
+									'Search'
 								)
 							),
 							React.createElement(
-								"div",
-								{ className: "panel-body" },
+								'div',
+								{ className: 'panel-body' },
 								React.createElement(
-									"form",
+									'form',
 									null,
 									React.createElement(
-										"div",
-										{ className: "form-group" },
+										'div',
+										{ className: 'form-group' },
 										React.createElement(
-											"label",
+											'label',
 											null,
-											"Topic"
+											'Topic'
 										),
-										React.createElement("input", { type: "text", className: "form-control", id: "search-topic" })
+										React.createElement('input', { type: 'text', className: 'form-control', id: 'search_topic', onChange: this.changedData })
 									),
 									React.createElement(
-										"div",
-										{ className: "form-group" },
+										'div',
+										{ className: 'form-group' },
 										React.createElement(
-											"label",
+											'label',
 											null,
-											"STart Year"
+											'Start Year'
 										),
-										React.createElement("input", { type: "text", className: "form-control", id: "search-sy" })
+										React.createElement('input', { type: 'text', className: 'form-control', id: 'start_year', onChange: this.changedData })
 									),
 									React.createElement(
-										"div",
-										{ className: "form-group" },
+										'div',
+										{ className: 'form-group' },
 										React.createElement(
-											"label",
+											'label',
 											null,
-											"End Year"
+											'End Year'
 										),
-										React.createElement("input", { type: "text", className: "form-control", id: "search-ey" })
+										React.createElement('input', { type: 'text', className: 'form-control', id: 'end_year', onChange: this.changedData })
 									),
 									React.createElement(
-										"a",
-										{ href: "", className: "btn btn-primary" },
-										"Submit"
+										'a',
+										{ href: '', className: 'btn btn-primary', onClick: this.queryData },
+										'Submit'
 									)
 								)
 							)
@@ -19866,24 +19890,24 @@
 					)
 				),
 				React.createElement(
-					"div",
-					{ className: "row" },
+					'div',
+					{ className: 'row' },
 					React.createElement(
-						"div",
-						{ className: "col-md-12" },
+						'div',
+						{ className: 'col-md-12' },
 						React.createElement(
-							"div",
-							{ className: "panel panel-default" },
+							'div',
+							{ className: 'panel panel-default' },
 							React.createElement(
-								"div",
-								{ className: "panel-heading" },
+								'div',
+								{ className: 'panel-heading' },
 								React.createElement(
-									"h2",
+									'h2',
 									null,
-									"Results"
+									'Results'
 								)
 							),
-							React.createElement("div", { className: "panel-body" })
+							React.createElement('div', { className: 'panel-body' })
 						)
 					)
 				)
@@ -19939,6 +19963,30 @@
 	});
 
 	module.exports = Saved;
+
+/***/ },
+/* 162 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var helpers = {
+
+		searchNYT: function searchNYT(searchTopic, startYear, endYear) {
+
+			var nytAPI = 'c93c620e2666430ab20bf934eca8d8d6';
+
+			var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" + nytAPI + "&q=";
+			queryURL += searchTopic;
+			queryURL += "&begin_date=" + startYear + "0101";
+			queryURL += "&end_date=" + endYear + "0101";
+
+			console.log(queryURL);
+		}
+
+	};
+
+	module.exports = helpers;
 
 /***/ }
 /******/ ]);
