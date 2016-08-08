@@ -14,8 +14,9 @@ var Search = React.createClass({
 	changedData: function(event) {
 		
 		// resetting the state each time the user changes something in any of the inputs by setting teh id of the inputs to be the same as the key in the returned state object
-		var key_state = event.target.id;
-		this.setState({key_state: event.target.value});
+		this.setState({[event.target.id]: event.target.value});
+
+		console.log(this.state);
 
 	},
 
