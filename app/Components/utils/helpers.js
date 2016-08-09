@@ -35,7 +35,23 @@ var helpers = {
 
 		}); // end axios.get()
 
-	} // end searchNYT()
+	}, // end searchNYT()
+
+	// post the article to the db
+	postArticle: function(article_to_post) {
+		
+		// console.log(article_to_post);
+
+		// use axios to grab the post route defined in our server.js file so we can post this article to the db
+		return axios.post('/api',article_to_post)
+			.then(function(results) {
+				
+				console.log('posted to mongo');
+				// return(results);
+
+		}); // end axios.post()
+
+	} // end postArticle()
 
 } // end helpers
 

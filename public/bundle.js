@@ -19827,9 +19827,28 @@
 
 				// .bind so we have this refering to the object returned
 			}.bind(this));
+		}, // end queryData()
+
+		clickHandler: function clickHandler(event) {
+
+			event.preventDefault();
+
+			// set the state of the article we're saving
+			this.setState({
+				article_to_save: {
+					article_title: event.target.parentElement.children[2].innerHTML,
+					article_url: event.target.parentElement.children[2].href,
+					article_pub_date: event.target.parentElement.children[4].innerHTML
+				}
+				// callback function so the state can update before we do anyting this that data
+			}, function () {
+
+				// call the postArticle function and pass the article
+				helpers.postArticle(this.state.article_to_save);
+			}); // end setState()	
 		},
 
-		// end queryData()
+		// end clickHandler()
 		render: function render() {
 
 			return React.createElement(
@@ -19919,7 +19938,7 @@
 							),
 							React.createElement(
 								'div',
-								{ className: 'panel-body' },
+								{ className: 'panel-body', onClick: this.clickHandler },
 								this.state.nytdata.map(function (article, i) {
 
 									return React.createElement(
@@ -19935,6 +19954,12 @@
 											'a',
 											{ href: article.url },
 											article.title
+										),
+										' ',
+										React.createElement(
+											'span',
+											null,
+											article.pub_date
 										)
 									);
 								})
@@ -19989,7 +20014,19 @@
 				// return the object to have access to it on the .then callback in the Search component
 				return articles_obj_array;
 			}); // end axios.get()
-		} // end searchNYT()
+		}, // end searchNYT()
+
+		// post the article to the db
+		postArticle: function postArticle(article_to_post) {
+
+			console.log(article_to_post);
+
+			return axios.post('/api', article_to_post).then(function (results) {
+
+				console.log('posted to mongo');
+				// return(results);
+			});
+		} // end postArticle()
 
 	}; // end helpers
 
