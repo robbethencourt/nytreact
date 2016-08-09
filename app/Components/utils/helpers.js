@@ -25,8 +25,14 @@ var helpers = {
 
 		return axios.get(queryURL)
 			.then(function(nytdata) {
-				
-				console.log(nytdata);
+
+				var articles = nytdata.data.response.docs;
+
+				articles.map(function(article) {
+					console.log(article.headline.main);
+					console.log(article.pub_date);
+					console.log(article.web_url);
+				});
 
 		});
 
