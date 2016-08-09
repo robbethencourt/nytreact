@@ -45,9 +45,19 @@ app.get('/api/', function(req, res) {
 
 // post data to the db
 app.post('/api/', function(req, res) {
+
+	// save the article object which has the article title, url and publish date to the article variable
 	var article = req.body;
-	console.log(article);
-});
+
+	// console.log(article);
+
+	// insert the article into the db
+	db.articles.insert(article, function(err) {
+		if (err) throw err;
+		console.log('saved to db');
+	}); // end db.articles.insert()
+
+}); // end app.post()
 
 // delete data from the db
 app.delete('/api/', function(req, res) {

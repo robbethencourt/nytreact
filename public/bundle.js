@@ -20020,6 +20020,12 @@
 		postArticle: function postArticle(article_to_post) {
 
 			console.log(article_to_post);
+
+			return axios.post('/api', article_to_post).then(function (results) {
+
+				console.log('posted to mongo');
+				// return(results);
+			});
 		} // end postArticle()
 
 	}; // end helpers
