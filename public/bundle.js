@@ -19829,16 +19829,26 @@
 			}.bind(this));
 		}, // end queryData()
 
-		saveToDb: function saveToDb(event) {
+		clickHandler: function clickHandler(event) {
 
 			event.preventDefault();
 
-			// console.log(event.target.parentElement);
-			console.log(event.target.parentElement.children[2].innerHTML);
-			console.log(event.target.parentElement.children[2].href);
-			console.log(event.target.parentElement.children[4].innerHTML);
+			// set the state of the article we're saving
+			this.setState({
+				article_to_save: {
+					article_title: event.target.parentElement.children[2].innerHTML,
+					article_url: event.target.parentElement.children[2].href,
+					article_pub_date: event.target.parentElement.children[4].innerHTML
+				}
+				// callback function so the state can update before we do anyting this that data
+			}, function () {
+
+				// call the postArticle function and pass the article
+				helpers.postArticle(this.state.article_to_save);
+			}); // end setState()	
 		},
 
+		// end clickHandler()
 		render: function render() {
 
 			return React.createElement(
@@ -19928,7 +19938,7 @@
 							),
 							React.createElement(
 								'div',
-								{ className: 'panel-body', onClick: this.saveToDb },
+								{ className: 'panel-body', onClick: this.clickHandler },
 								this.state.nytdata.map(function (article, i) {
 
 									return React.createElement(
@@ -20004,7 +20014,13 @@
 				// return the object to have access to it on the .then callback in the Search component
 				return articles_obj_array;
 			}); // end axios.get()
-		} // end searchNYT()
+		}, // end searchNYT()
+
+		// post the article to the db
+		postArticle: function postArticle(article_to_post) {
+
+			console.log(article_to_post);
+		} // end postArticle()
 
 	}; // end helpers
 

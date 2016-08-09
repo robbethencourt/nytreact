@@ -35,16 +35,26 @@ var Search = React.createClass({
 
 	}, // end queryData()
 
-	saveToDb: function(event) {
+	clickHandler: function(event) {
 
-		event.preventDefault();
+		event.preventDefault();	
 
-		// console.log(event.target.parentElement);
-		console.log(event.target.parentElement.children[2].innerHTML);
-		console.log(event.target.parentElement.children[2].href);
-		console.log(event.target.parentElement.children[4].innerHTML);		
+		// set the state of the article we're saving
+		this.setState({
+			article_to_save: {
+				article_title: event.target.parentElement.children[2].innerHTML,
+				article_url: event.target.parentElement.children[2].href,
+				article_pub_date: event.target.parentElement.children[4].innerHTML
+			}
+		// callback function so the state can update before we do anyting this that data
+		}, function() {
+			
+			// call the postArticle function and pass the article
+			helpers.postArticle(this.state.article_to_save);
+
+		});	// end setState()	
 	
-	},
+	}, // end clickHandler()
 
 	render: function() {
 		
@@ -85,7 +95,7 @@ var Search = React.createClass({
 							<div className="panel-heading">
 								<h2>Results</h2>
 							</div>
-							<div className="panel-body" onClick={this.saveToDb}>
+							<div className="panel-body" onClick={this.clickHandler}>
 
 								{/* loop through the articles returned and display to screen with a save button */}
 								{this.state.nytdata.map(function(article, i) {

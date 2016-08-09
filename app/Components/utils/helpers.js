@@ -35,7 +35,14 @@ var helpers = {
 
 		}); // end axios.get()
 
-	} // end searchNYT()
+	}, // end searchNYT()
+
+	// post the article to the db
+	postArticle: function(article_to_post) {
+		
+		console.log(article_to_post);
+
+	} // end postArticle()
 
 } // end helpers
 
