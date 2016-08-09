@@ -7,26 +7,32 @@ var Search = React.createClass({
 		return {
 			search_topic: '',
 			start_year: '',
-			end_year: ''
+			end_year: '',
+			nytdata: []
 		}
-	},
+	}, // end getInitialState()
 
 	changedData: function(event) {
 		
 		// resetting the state each time the user changes something in any of the inputs by setting teh id of the inputs to be the same as the key in the returned state object
 		this.setState({[event.target.id]: event.target.value});
 
-		console.log(this.state);
-
-	},
+	}, // end changedData
 
 	queryData: function(event) {
 
 		event.preventDefault();
-		
-		helpers.searchNYT(this.state.search_topic, this.state.start_year, this.state.end_year);
 
-	},
+		// call the function below in the helpers.js file		
+		helpers.searchNYT(this.state.search_topic, this.state.start_year, this.state.end_year)
+			.then(function(data) {
+				console.log(data.url);
+
+				this.setState({nytdata: data[0].url});
+
+		}.bind(this));
+
+	}, // end queryData()
 
 	render: function() {
 		
@@ -68,7 +74,7 @@ var Search = React.createClass({
 								<h2>Results</h2>
 							</div>
 							<div className="panel-body">
-								
+								<p>{this.state.nytdata}</p>
 							</div>
 						</div>
 					</div>
@@ -76,9 +82,10 @@ var Search = React.createClass({
 
 			</div>
 
-		)
-	}
+		) // end return()
 
-});
+	} // end render()
+
+}); // end Search
 
 module.exports = Search;
