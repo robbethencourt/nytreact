@@ -19827,9 +19827,18 @@
 
 				// .bind so we have this refering to the object returned
 			}.bind(this));
+		}, // end queryData()
+
+		saveToDb: function saveToDb(event) {
+
+			event.preventDefault();
+
+			// console.log(event.target.parentElement);
+			console.log(event.target.parentElement.children[2].innerHTML);
+			console.log(event.target.parentElement.children[2].href);
+			console.log(event.target.parentElement.children[4].innerHTML);
 		},
 
-		// end queryData()
 		render: function render() {
 
 			return React.createElement(
@@ -19919,7 +19928,7 @@
 							),
 							React.createElement(
 								'div',
-								{ className: 'panel-body' },
+								{ className: 'panel-body', onClick: this.saveToDb },
 								this.state.nytdata.map(function (article, i) {
 
 									return React.createElement(
@@ -19935,6 +19944,12 @@
 											'a',
 											{ href: article.url },
 											article.title
+										),
+										' ',
+										React.createElement(
+											'span',
+											null,
+											article.pub_date
 										)
 									);
 								})

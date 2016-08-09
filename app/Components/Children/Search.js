@@ -35,6 +35,17 @@ var Search = React.createClass({
 
 	}, // end queryData()
 
+	saveToDb: function(event) {
+
+		event.preventDefault();
+
+		// console.log(event.target.parentElement);
+		console.log(event.target.parentElement.children[2].innerHTML);
+		console.log(event.target.parentElement.children[2].href);
+		console.log(event.target.parentElement.children[4].innerHTML);		
+	
+	},
+
 	render: function() {
 		
 		return (
@@ -74,12 +85,12 @@ var Search = React.createClass({
 							<div className="panel-heading">
 								<h2>Results</h2>
 							</div>
-							<div className="panel-body">
+							<div className="panel-body" onClick={this.saveToDb}>
 
 								{/* loop through the articles returned and display to screen with a save button */}
 								{this.state.nytdata.map(function(article, i) {
 
-									return <p key={i}><a href="" className="btn btn-primary">Save</a> <a href={article.url}>{article.title}</a></p>
+									return <p key={i}><a href="" className="btn btn-primary">Save</a> <a href={article.url}>{article.title}</a> <span>{article.pub_date}</span></p>
 
 								})}
 
