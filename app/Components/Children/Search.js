@@ -26,10 +26,11 @@ var Search = React.createClass({
 		// call the function below in the helpers.js file		
 		helpers.searchNYT(this.state.search_topic, this.state.start_year, this.state.end_year)
 			.then(function(data) {
-				console.log(data.url);
 
-				this.setState({nytdata: data[0].url});
+				// set the state of nytdata to all the data returned from the ny times api so we can map through it and display it to the screen below
+				this.setState({nytdata: data});
 
+		// .bind so we have this refering to the object returned
 		}.bind(this));
 
 	}, // end queryData()
@@ -74,7 +75,14 @@ var Search = React.createClass({
 								<h2>Results</h2>
 							</div>
 							<div className="panel-body">
-								<p>{this.state.nytdata}</p>
+
+								{/* loop through the articles returned and display to screen with a save button */}
+								{this.state.nytdata.map(function(article, i) {
+
+									return <p key={i}><a href="" className="btn btn-primary">Save</a> <a href={article.url}>{article.title}</a></p>
+
+								})}
+
 							</div>
 						</div>
 					</div>

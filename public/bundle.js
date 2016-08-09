@@ -19821,12 +19821,15 @@
 
 			// call the function below in the helpers.js file		
 			helpers.searchNYT(this.state.search_topic, this.state.start_year, this.state.end_year).then(function (data) {
-				console.log(data.url);
 
-				this.setState({ nytdata: data[0].url });
+				// set the state of nytdata to all the data returned from the ny times api so we can map through it and display it to the screen below
+				this.setState({ nytdata: data });
+
+				// .bind so we have this refering to the object returned
 			}.bind(this));
-		}, // end queryData()
+		},
 
+		// end queryData()
 		render: function render() {
 
 			return React.createElement(
@@ -19917,11 +19920,24 @@
 							React.createElement(
 								'div',
 								{ className: 'panel-body' },
-								React.createElement(
-									'p',
-									null,
-									this.state.nytdata
-								)
+								this.state.nytdata.map(function (article, i) {
+
+									return React.createElement(
+										'p',
+										{ key: i },
+										React.createElement(
+											'a',
+											{ href: '', className: 'btn btn-primary' },
+											'Save'
+										),
+										' ',
+										React.createElement(
+											'a',
+											{ href: article.url },
+											article.title
+										)
+									);
+								})
 							)
 						)
 					)
