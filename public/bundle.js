@@ -19745,6 +19745,22 @@
 		displayName: 'Main',
 
 
+		getInitialState: function getInitialState() {
+			return {
+				articles: []
+			};
+		},
+
+		componentDidMount: function componentDidMount() {
+
+			helpers.getArticles().then(function (response) {
+				console.log('articles: ' + response.data[0].article_title);
+				this.setState({
+					articles: response.data
+				});
+			}.bind(this));
+		},
+
 		render: function render() {
 
 			return React.createElement(
@@ -19776,7 +19792,7 @@
 				React.createElement(
 					'div',
 					{ className: 'saved' },
-					React.createElement(Saved, null)
+					React.createElement(Saved, { articles: this.state.articles })
 				)
 			);
 		}
@@ -20019,14 +20035,24 @@
 		// post the article to the db
 		postArticle: function postArticle(article_to_post) {
 
-			console.log(article_to_post);
+			// console.log(article_to_post);
 
+			// use axios to grab the post route defined in our server.js file so we can post this article to the db
 			return axios.post('/api', article_to_post).then(function (results) {
 
 				console.log('posted to mongo');
 				// return(results);
+			}); // end axios.post()
+		}, // end postArticle()
+
+		getArticles: function getArticles() {
+
+			return axios.get('/api').then(function (response) {
+
+				console.log(response);
+				return response;
 			});
-		} // end postArticle()
+		}
 
 	}; // end helpers
 
@@ -21279,7 +21305,33 @@
 									"Saved Articles"
 								)
 							),
-							React.createElement("div", { className: "panel-body" })
+							React.createElement(
+								"div",
+								{ className: "panel-body" },
+								this.props.articles.map(function (search, i) {
+									return React.createElement(
+										"p",
+										{ key: i },
+										React.createElement(
+											"a",
+											{ href: "", className: "btn btn-danger", id: search._id },
+											"Delete"
+										),
+										" ",
+										React.createElement(
+											"a",
+											{ href: search.article_url },
+											search.article_title
+										),
+										" ",
+										React.createElement(
+											"span",
+											null,
+											search.article_pub_date
+										)
+									);
+								})
+							)
 						)
 					)
 				)

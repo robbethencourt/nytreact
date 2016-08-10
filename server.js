@@ -39,9 +39,15 @@ app.get('/', function(req, res){
 });
 
 // get data from the db
-app.get('/api/', function(req, res) {
+app.get('/api', function(req, res) {
 
-});
+	db.articles.find({}).sort({article_pub_date: -1}, function(err, docs) {
+		if (err) throw err;
+		console.log('these are the docs: ' + docs);
+		res.send(docs);
+	}); // end db.articles.find()
+
+}); // end app.get()
 
 // post data to the db
 app.post('/api/', function(req, res) {

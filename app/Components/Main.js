@@ -5,6 +5,26 @@ var helpers = require('./utils/helpers');
 
 var Main = React.createClass({
 
+	getInitialState: function() {
+		return {
+			articles: []
+		}
+	},
+
+	componentDidMount: function() {
+		
+		helpers.getArticles()
+			.then(function(response) {
+				console.log('articles: ' + response.data[0].article_title);
+				this.setState({
+					articles: response.data
+				})
+				
+			}.bind(this))
+
+
+	},
+
 	render: function() {
 		
 		return (
@@ -23,7 +43,7 @@ var Main = React.createClass({
 				</div>
 
 				<div className="saved">
-					<Saved />
+					<Saved articles={this.state.articles} />
 				</div>
 
 			</div>

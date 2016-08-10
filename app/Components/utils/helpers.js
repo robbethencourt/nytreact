@@ -51,7 +51,18 @@ var helpers = {
 
 		}); // end axios.post()
 
-	} // end postArticle()
+	}, // end postArticle()
+
+	getArticles: function() {
+		
+		return axios.get('/api')
+			.then(function(response) {
+
+				console.log(response)
+				return response;
+			});
+
+	}
 
 } // end helpers
 
