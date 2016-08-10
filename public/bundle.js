@@ -19746,18 +19746,29 @@
 
 
 		getInitialState: function getInitialState() {
+
 			return {
 				topic: '',
-				articles: []
+				articles: [],
+				article_deleted: {}
 			};
-		},
+		}, // end getInitialState()
 
 		// we need this function so the child can update the parent that an article has been saved and can then call componentDidUpdate and pull that article into the saved section without refreshing the page
 		setArticles: function setArticles(search_topic) {
+
 			this.setState({
 				topic: search_topic
 			});
-		},
+		}, // end setArticles()
+
+		// same as above in that we need this function to automatically display the items on the page with componentDidUpdate function
+		setDeleteArticles: function setDeleteArticles(article_deleted) {
+
+			this.setState({
+				article_deleted: article_deleted
+			});
+		}, // end setDeleteArticles()
 
 		// we will call this function form the component did mount and component did update functions below
 		getArticlesFromHelpers: function getArticlesFromHelpers() {
@@ -19817,7 +19828,9 @@
 				React.createElement(
 					'div',
 					{ className: 'saved' },
-					React.createElement(Saved, { articles: this.state.articles })
+					React.createElement(Saved, {
+						articles: this.state.articles,
+						setDeleteArticles: this.setDeleteArticles })
 				)
 			);
 		}
@@ -19842,6 +19855,7 @@
 
 
 		getInitialState: function getInitialState() {
+
 			return {
 				search_topic: '',
 				start_year: '',
@@ -19886,10 +19900,10 @@
 
 				// call the postArticle function and pass the article
 				helpers.postArticle(this.state.article_to_save);
-			}); // end setState()
 
-			// need to callthe setArticles function in main.js so that the newly saved articles to the database automatically show up in the saved section
-			this.props.setArticles(this.state.search_topic);
+				// need to call the setArticles function in main.js so that the newly saved articles to the database automatically show up in the saved section
+				this.props.setArticles(this.state.search_topic);
+			}); // end setState()
 		},
 
 		// end clickHandler()
@@ -20066,10 +20080,10 @@
 			// console.log(article_to_post);
 
 			// use axios to grab the post route defined in our server.js file so we can post this article to the db
-			return axios.post('/api', article_to_post).then(function (results) {
+			return axios.post('/api', article_to_post).then(function (response) {
 
-				console.log('posted to mongo');
 				// return(results);
+
 			}); // end axios.post()
 		}, // end postArticle()
 
@@ -20082,7 +20096,17 @@
 				// return response so we have access to it in main.js, which will then set the state and send it to saved.js
 				return response;
 			}); // end axios.get()
-		} // end getArticles()
+		}, // end getArticles()
+
+		// delete the article from the db
+		deleteArticle: function deleteArticle(article_id) {
+
+			// use axios to access the api/delete route. Needed to make this one different from the others as I couldn't get .delete to work so needed to use .post to remove from mongodb
+			return axios.post('/api/delete/', article_id).then(function (response) {
+
+				return response;
+			}); // end axios.post()
+		} // end deleteArticle()
 
 	}; // end helpers
 
@@ -21304,58 +21328,92 @@
 /* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
+	var helpers = __webpack_require__(161);
 
 	var Saved = React.createClass({
-		displayName: "Saved",
+		displayName: 'Saved',
 
 
+		getInitialState: function getInitialState() {
+
+			return {
+				article_delete: ''
+			};
+		}, // end getInitialState()
+
+		clickHandler: function clickHandler(event) {
+
+			event.preventDefault();
+
+			// set the id of the article to delete to the article_id variable
+			var article_id = event.target.parentElement.children[0].id;
+
+			// set the state of the article_id we're deleting
+			this.setState({
+				article_delete: {
+					article_id: article_id
+				}
+				// callback function so the state can update before we do anyting this that data
+			}, function () {
+
+				console.log(this.state.article_delete);
+				// call the deleteArticle function and pass the article
+				helpers.deleteArticle(this.state.article_delete);
+
+				// this needs to be called in the callback or this function will run before deleteArticle and the screen won't remove the most recently deleted article without refreshing or clicking on another article to delete
+				// need to call the deleteArticles function in main.js so that the newly deleted article from the database automatically dissapears in the saved section
+				this.props.setDeleteArticles(this.state.article_delete);
+			}); // end setState()
+		},
+
+		// end clickHandler()
 		render: function render() {
 
 			return React.createElement(
-				"div",
-				{ className: "container" },
+				'div',
+				{ className: 'container' },
 				React.createElement(
-					"div",
-					{ className: "row" },
+					'div',
+					{ className: 'row' },
 					React.createElement(
-						"div",
-						{ className: "col-md-12" },
+						'div',
+						{ className: 'col-md-12' },
 						React.createElement(
-							"div",
-							{ className: "panel panel-default" },
+							'div',
+							{ className: 'panel panel-default' },
 							React.createElement(
-								"div",
-								{ className: "panel-heading" },
+								'div',
+								{ className: 'panel-heading' },
 								React.createElement(
-									"h2",
+									'h2',
 									null,
-									"Saved Articles"
+									'Saved Articles'
 								)
 							),
 							React.createElement(
-								"div",
-								{ className: "panel-body" },
+								'div',
+								{ className: 'panel-body', onClick: this.clickHandler },
 								this.props.articles.map(function (search, i) {
 									return React.createElement(
-										"p",
+										'p',
 										{ key: i },
 										React.createElement(
-											"a",
-											{ href: "", className: "btn btn-danger", id: search._id },
-											"Delete"
+											'a',
+											{ href: '', className: 'btn btn-danger', id: search._id },
+											'Delete'
 										),
-										" ",
+										' ',
 										React.createElement(
-											"a",
+											'a',
 											{ href: search.article_url },
 											search.article_title
 										),
-										" ",
+										' ',
 										React.createElement(
-											"span",
+											'span',
 											null,
 											search.article_pub_date
 										)

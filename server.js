@@ -38,17 +38,18 @@ app.get('/', function(req, res){
 
   res.sendFile('./public/index.html');
   
-});
+}); // end app.get()
 
 // get data from the db. The api route will be accessed by helpers.js
-app.get('/api', function(req, res) {
+app.get('/api/', function(req, res) {
 
 	// grab all the articles in the database
 	db.articles.find({}).sort({article_pub_date: -1}, function(err, docs) {
 
 		if (err) throw err;
 
-		console.log('these are the docs: ' + docs);
+		console.log('getting the articles');
+
 		res.send(docs);
 
 	}); // end db.articles.find()
@@ -58,10 +59,8 @@ app.get('/api', function(req, res) {
 // post data to the db. the api route will be accessed by helpers.js
 app.post('/api/', function(req, res) {
 
-	// save the article object which has the article title, url and publish date to the article variable
+	// save the article object which has the article title, url and publish date to the variable
 	var article = req.body;
-
-	// console.log(article);
 
 	// insert the article into the db
 	db.articles.insert(article, function(err) {
@@ -74,11 +73,22 @@ app.post('/api/', function(req, res) {
 
 }); // end app.post()
 
-// delete data from the db
-app.delete('/api/', function(req, res) {
+// delete data from the db. Wanted to use app.delete but couldn't. Not sure why.
+app.post('/api/delete/', function(req, res) {
+
+	// save the article object which has the article id to the variable
 	var article = req.body;
-	console.log(article);
-});
+
+	// had to use .remove() instead of .deleteOne() but not sure why.
+	db.articles.remove({"_id": (mongojs.ObjectId(article.article_id))}, function(err, docs) {
+		
+		if (err) throw err;
+
+		console.log('article deleted');
+
+	}); // end db.articles.remove()
+
+}); // end app.post()
 
 // -------------------------------------------------
 

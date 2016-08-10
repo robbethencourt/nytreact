@@ -6,18 +6,32 @@ var helpers = require('./utils/helpers');
 var Main = React.createClass({
 
 	getInitialState: function() {
+
 		return {
 			topic: '',
-			articles: []
+			articles: [],
+			article_deleted: {}
 		}
-	},
+		
+	}, // end getInitialState()
 
 	// we need this function so the child can update the parent that an article has been saved and can then call componentDidUpdate and pull that article into the saved section without refreshing the page
 	setArticles: function(search_topic) {
+
 		this.setState({
 			topic: search_topic
-		})
-	},
+		});
+
+	}, // end setArticles()
+
+	// same as above in that we need this function to automatically display the items on the page with componentDidUpdate function
+	setDeleteArticles: function(article_deleted) {
+
+		this.setState({
+			article_deleted: article_deleted
+		});
+
+	}, // end setDeleteArticles()
 
 	// we will call this function form the component did mount and component did update functions below
 	getArticlesFromHelpers: function() {
@@ -69,7 +83,9 @@ var Main = React.createClass({
 				</div>
 
 				<div className="saved">
-					<Saved articles={this.state.articles} />
+					<Saved 
+						articles={this.state.articles}
+						setDeleteArticles={this.setDeleteArticles} />
 				</div>
 
 			</div>

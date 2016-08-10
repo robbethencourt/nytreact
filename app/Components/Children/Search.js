@@ -4,12 +4,14 @@ var helpers = require('../utils/helpers');
 var Search = React.createClass({
 
 	getInitialState: function() {
+
 		return {
 			search_topic: '',
 			start_year: '',
 			end_year: '',
 			nytdata: []
 		}
+		
 	}, // end getInitialState()
 
 	changedData: function(event) {
@@ -52,10 +54,10 @@ var Search = React.createClass({
 			// call the postArticle function and pass the article
 			helpers.postArticle(this.state.article_to_save);
 
-		});	// end setState()
+			// need to call the setArticles function in main.js so that the newly saved articles to the database automatically show up in the saved section
+			this.props.setArticles(this.state.search_topic);
 
-		// need to callthe setArticles function in main.js so that the newly saved articles to the database automatically show up in the saved section
-		this.props.setArticles(this.state.search_topic);
+		});	// end setState()
 	
 	}, // end clickHandler()
 
