@@ -53,16 +53,19 @@ var helpers = {
 
 	}, // end postArticle()
 
+	// get all the articles in the db
 	getArticles: function() {
 		
+		// using axios to access the get route defined in server.js and will return all the articles in our db
 		return axios.get('/api')
 			.then(function(response) {
 
-				console.log(response)
+				// return response so we have access to it in main.js, which will then set the state and send it to saved.js
 				return response;
-			});
 
-	}
+		}); // end axios.get()
+
+	} // end getArticles()
 
 } // end helpers
 

@@ -19751,15 +19751,19 @@
 			};
 		},
 
+		// once the page loads get all the articles in the database
 		componentDidMount: function componentDidMount() {
 
+			// access helpers.js to use the getArticles function and access the get route defined in server.js
 			helpers.getArticles().then(function (response) {
-				console.log('articles: ' + response.data[0].article_title);
+
+				// set the state of articles with the articles stored in the database
 				this.setState({
 					articles: response.data
 				});
-			}.bind(this));
-		},
+			}.bind(this)); // end helpers.getArticles()
+
+		}, // end componentDidMount()
 
 		render: function render() {
 
@@ -20045,14 +20049,16 @@
 			}); // end axios.post()
 		}, // end postArticle()
 
+		// get all the articles in the db
 		getArticles: function getArticles() {
 
+			// using axios to access the get route defined in server.js and will return all the articles in our db
 			return axios.get('/api').then(function (response) {
 
-				console.log(response);
+				// return response so we have access to it in main.js, which will then set the state and send it to saved.js
 				return response;
-			});
-		}
+			}); // end axios.get()
+		} // end getArticles()
 
 	}; // end helpers
 

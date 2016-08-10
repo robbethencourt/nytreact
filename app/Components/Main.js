@@ -11,19 +11,22 @@ var Main = React.createClass({
 		}
 	},
 
+	// once the page loads get all the articles in the database
 	componentDidMount: function() {
 		
+		// access helpers.js to use the getArticles function and access the get route defined in server.js
 		helpers.getArticles()
 			.then(function(response) {
-				console.log('articles: ' + response.data[0].article_title);
+
+				// set the state of articles with the articles stored in the database
 				this.setState({
 					articles: response.data
 				})
 				
-			}.bind(this))
+		}.bind(this)); // end helpers.getArticles()
 
 
-	},
+	}, // end componentDidMount()
 
 	render: function() {
 		
