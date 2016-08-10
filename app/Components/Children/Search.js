@@ -52,7 +52,10 @@ var Search = React.createClass({
 			// call the postArticle function and pass the article
 			helpers.postArticle(this.state.article_to_save);
 
-		});	// end setState()	
+		});	// end setState()
+
+		// need to callthe setArticles function in main.js so that the newly saved articles to the database automatically show up in the saved section
+		this.props.setArticles(this.state.search_topic);
 	
 	}, // end clickHandler()
 

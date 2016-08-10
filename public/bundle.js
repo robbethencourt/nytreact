@@ -19745,6 +19745,46 @@
 		displayName: 'Main',
 
 
+		getInitialState: function getInitialState() {
+			return {
+				topic: '',
+				articles: []
+			};
+		},
+
+		// we need this function so the child can update the parent that an article has been saved and can then call componentDidUpdate and pull that article into the saved section without refreshing the page
+		setArticles: function setArticles(search_topic) {
+			this.setState({
+				topic: search_topic
+			});
+		},
+
+		// we will call this function form the component did mount and component did update functions below
+		getArticlesFromHelpers: function getArticlesFromHelpers() {
+
+			// access helpers.js to use the getArticles function and access the get route defined in server.js
+			helpers.getArticles().then(function (response) {
+
+				// set the state of articles with the articles stored in the database
+				this.setState({
+					articles: response.data
+				});
+			}.bind(this)); // end helpers.getArticles()
+		}, // end getArticlesFromHelpers()
+
+		componentDidUpdate: function componentDidUpdate() {
+
+			// this is being called whenever a save article button is pressed in the search.js file
+			this.getArticlesFromHelpers();
+		}, // end componentDidUpdate()
+
+		// once the page loads get all the articles in the database
+		componentDidMount: function componentDidMount() {
+
+			this.getArticlesFromHelpers();
+		},
+
+		// end componentDidMount()
 		render: function render() {
 
 			return React.createElement(
@@ -19771,12 +19811,13 @@
 				React.createElement(
 					'div',
 					{ className: 'search' },
-					React.createElement(Search, null)
+					React.createElement(Search, { setArticles: this.setArticles }),
+					'}'
 				),
 				React.createElement(
 					'div',
 					{ className: 'saved' },
-					React.createElement(Saved, null)
+					React.createElement(Saved, { articles: this.state.articles })
 				)
 			);
 		}
@@ -19845,7 +19886,10 @@
 
 				// call the postArticle function and pass the article
 				helpers.postArticle(this.state.article_to_save);
-			}); // end setState()	
+			}); // end setState()
+
+			// need to callthe setArticles function in main.js so that the newly saved articles to the database automatically show up in the saved section
+			this.props.setArticles(this.state.search_topic);
 		},
 
 		// end clickHandler()
@@ -20019,14 +20063,26 @@
 		// post the article to the db
 		postArticle: function postArticle(article_to_post) {
 
-			console.log(article_to_post);
+			// console.log(article_to_post);
 
+			// use axios to grab the post route defined in our server.js file so we can post this article to the db
 			return axios.post('/api', article_to_post).then(function (results) {
 
 				console.log('posted to mongo');
 				// return(results);
-			});
-		} // end postArticle()
+			}); // end axios.post()
+		}, // end postArticle()
+
+		// get all the articles in the db
+		getArticles: function getArticles() {
+
+			// using axios to access the get route defined in server.js and will return all the articles in our db
+			return axios.get('/api').then(function (response) {
+
+				// return response so we have access to it in main.js, which will then set the state and send it to saved.js
+				return response;
+			}); // end axios.get()
+		} // end getArticles()
 
 	}; // end helpers
 
@@ -21279,7 +21335,33 @@
 									"Saved Articles"
 								)
 							),
-							React.createElement("div", { className: "panel-body" })
+							React.createElement(
+								"div",
+								{ className: "panel-body" },
+								this.props.articles.map(function (search, i) {
+									return React.createElement(
+										"p",
+										{ key: i },
+										React.createElement(
+											"a",
+											{ href: "", className: "btn btn-danger", id: search._id },
+											"Delete"
+										),
+										" ",
+										React.createElement(
+											"a",
+											{ href: search.article_url },
+											search.article_title
+										),
+										" ",
+										React.createElement(
+											"span",
+											null,
+											search.article_pub_date
+										)
+									);
+								})
+							)
 						)
 					)
 				)

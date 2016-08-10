@@ -35,15 +35,27 @@ db.on('error', function (err) {
 
 // Main Route. This route will redirect to our rendered React application
 app.get('/', function(req, res){
+
   res.sendFile('./public/index.html');
+  
 });
 
-// get data from the db
-app.get('/api/', function(req, res) {
+// get data from the db. The api route will be accessed by helpers.js
+app.get('/api', function(req, res) {
 
-});
+	// grab all the articles in the database
+	db.articles.find({}).sort({article_pub_date: -1}, function(err, docs) {
 
-// post data to the db
+		if (err) throw err;
+
+		console.log('these are the docs: ' + docs);
+		res.send(docs);
+
+	}); // end db.articles.find()
+
+}); // end app.get()
+
+// post data to the db. the api route will be accessed by helpers.js
 app.post('/api/', function(req, res) {
 
 	// save the article object which has the article title, url and publish date to the article variable
@@ -53,8 +65,11 @@ app.post('/api/', function(req, res) {
 
 	// insert the article into the db
 	db.articles.insert(article, function(err) {
+
 		if (err) throw err;
+
 		console.log('saved to db');
+
 	}); // end db.articles.insert()
 
 }); // end app.post()
