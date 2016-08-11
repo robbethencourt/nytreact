@@ -4,9 +4,33 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 var mongojs = require('mongojs');
 
+
 // Create Instance of Express
 var app = express();
 var PORT = process.env.PORT || 3000; // Sets an initial port. We'll use this later in our listener
+app.set('port', process.env.PORT || 3000);
+
+
+// socketio
+var http = require('http').createServer(app);
+var io = require('socket.io').listen(http);
+
+// this communicates with the client side scripts to pass along the corresoponding message
+io.on('connection', function(socket) {
+
+	socket.on('message', function(msg) {
+
+		io.emit('message', msg);
+
+	}); // end socket.on()
+
+	// the below console.log() was a good way to make sure I had this set up properly. Keeping it for future reference
+	// console.log('a user connected');
+
+}); // end io.on()
+
+
+// morgan
 
 // Run Morgan for Logging
 app.use(logger('dev'));
@@ -17,7 +41,10 @@ app.use(bodyParser.json({type:'application/vnd.api+json'}));
 
 app.use(express.static('./public'));
 
+
 // -------------------------------------------------
+
+// Database
 
 // MongoDB Configuration configuration (Change this URL to your own DB)
 var databaseUrl = 'nytreact';
@@ -32,6 +59,8 @@ db.on('error', function (err) {
 
 
 // -------------------------------------------------
+
+// Routes
 
 // Main Route. This route will redirect to our rendered React application
 app.get('/', function(req, res){
@@ -90,9 +119,18 @@ app.post('/api/delete/', function(req, res) {
 
 }); // end app.post()
 
+
 // -------------------------------------------------
 
-// Listener
-app.listen(PORT, function() {
-  console.log("App listening on PORT: " + PORT);
+
+// Listeners
+
+// this is the version before integrating socket.io
+// app.listen(PORT, function() {
+//   console.log("App listening on PORT: " + PORT);
+// });
+
+// this is the listener setup for integrating socket.io
+http.listen(app.get('port'), function() {
+	console.log('App listening on PORT: ' + PORT);
 });

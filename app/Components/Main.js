@@ -5,6 +5,8 @@ var helpers = require('./utils/helpers');
 
 var Main = React.createClass({
 
+	socketio: io(),
+
 	getInitialState: function() {
 
 		return {
