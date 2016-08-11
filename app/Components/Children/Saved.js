@@ -26,7 +26,6 @@ var Saved = React.createClass({
 		// callback function so the state can update before we do anyting this that data
 		}, function() {
 			
-			console.log(this.state.article_delete);
 			// call the deleteArticle function and pass the article
 			helpers.deleteArticle(this.state.article_delete);
 

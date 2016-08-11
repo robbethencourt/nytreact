@@ -1,6 +1,9 @@
 var React = require('react');
 var helpers = require('../utils/helpers');
 
+// socket.io assignment to variable
+var socket = io();
+
 var Search = React.createClass({
 
 	getInitialState: function() {
@@ -16,7 +19,7 @@ var Search = React.createClass({
 
 	changedData: function(event) {
 		
-		// resetting the state each time the user changes something in any of the inputs by setting teh id of the inputs to be the same as the key in the returned state object
+		// resetting the state each time the user changes something in any of the inputs by setting the id of the inputs to be the same as the key in the returned state object
 		this.setState({[event.target.id]: event.target.value});
 
 	}, // end changedData
@@ -41,6 +44,14 @@ var Search = React.createClass({
 
 		event.preventDefault();	
 
+		// set the title of the article being saved to the db in a variable for socket.io to use
+		var socket_article_title = event.target.parentElement.children[2].innerHTML;
+
+		// emit the message with socket io. WARNING!!! can't use socket.on in here as it attaches event listners each time it's clicked and will call it multiple times. I put the socket.on call in a method below that self invokes
+		socket.emit('message', socket_article_title);
+
+		// this.getConnected(socket_article_title);
+
 		// set the state of the article we're saving
 		this.setState({
 			article_to_save: {
@@ -61,6 +72,28 @@ var Search = React.createClass({
 	
 	}, // end clickHandler()
 
+	socketIoConnection: function() {
+
+		// send the title of the article through socket.io
+		socket.on('message', function(article_to_emit) {
+
+			// ge the element I want the title to appear on
+			var just_added = document.getElementById('just-added');
+
+			// clear out any text that was previously in that element
+			just_added.innerHTML = '';
+
+			// create the text node of the article's title
+			var title_text_node = document.createTextNode('Title Added: ' + article_to_emit);
+
+			// append the title to the element
+			just_added.appendChild(title_text_node);
+
+		}); // end socket.on()
+
+	// socktIoConnection is a self invoking function so that it's ready to go from page load
+	}(),
+
 	render: function() {
 		
 		return (
@@ -71,7 +104,8 @@ var Search = React.createClass({
 					<div className="col-md-12">
 						<div className="panel panel-default">
 							<div className="panel-heading">
-								<h2>Search</h2>
+								<h2 id="testing">Search</h2>
+								<span id="just-added"></span>
 							</div>
 							<div className="panel-body">
 								<form>

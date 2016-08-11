@@ -19745,6 +19745,8 @@
 		displayName: 'Main',
 
 
+		socketio: io(),
+
 		getInitialState: function getInitialState() {
 
 			return {
@@ -19850,6 +19852,9 @@
 	var React = __webpack_require__(1);
 	var helpers = __webpack_require__(161);
 
+	// socket.io assignment to variable
+	var socket = io();
+
 	var Search = React.createClass({
 		displayName: 'Search',
 
@@ -19866,7 +19871,7 @@
 
 		changedData: function changedData(event) {
 
-			// resetting the state each time the user changes something in any of the inputs by setting teh id of the inputs to be the same as the key in the returned state object
+			// resetting the state each time the user changes something in any of the inputs by setting the id of the inputs to be the same as the key in the returned state object
 			this.setState(_defineProperty({}, event.target.id, event.target.value));
 		}, // end changedData
 
@@ -19888,6 +19893,14 @@
 
 			event.preventDefault();
 
+			// set the title of the article being saved to the db in a variable for socket.io to use
+			var socket_article_title = event.target.parentElement.children[2].innerHTML;
+
+			// emit the message with socket io. WARNING!!! can't use socket.on in here as it attaches event listners each time it's clicked and will call it multiple times. I put the socket.on call in a method below that self invokes
+			socket.emit('message', socket_article_title);
+
+			// this.getConnected(socket_article_title);
+
 			// set the state of the article we're saving
 			this.setState({
 				article_to_save: {
@@ -19904,9 +19917,29 @@
 				// need to call the setArticles function in main.js so that the newly saved articles to the database automatically show up in the saved section
 				this.props.setArticles(this.state.search_topic);
 			}); // end setState()
-		},
+		}, // end clickHandler()
 
-		// end clickHandler()
+		socketIoConnection: function () {
+
+			// send the title of the article through socket.io
+			socket.on('message', function (article_to_emit) {
+
+				// ge the element I want the title to appear on
+				var just_added = document.getElementById('just-added');
+
+				// clear out any text that was previously in that element
+				just_added.innerHTML = '';
+
+				// create the text node of the article's title
+				var title_text_node = document.createTextNode('Title Added: ' + article_to_emit);
+
+				// append the title to the element
+				just_added.appendChild(title_text_node);
+			}); // end socket.on()
+
+			// socktIoConnection is a self invoking function so that it's ready to go from page load
+		}(),
+
 		render: function render() {
 
 			return React.createElement(
@@ -19926,9 +19959,10 @@
 								{ className: 'panel-heading' },
 								React.createElement(
 									'h2',
-									null,
+									{ id: 'testing' },
 									'Search'
-								)
+								),
+								React.createElement('span', { id: 'just-added' })
 							),
 							React.createElement(
 								'div',
@@ -21359,7 +21393,6 @@
 				// callback function so the state can update before we do anyting this that data
 			}, function () {
 
-				console.log(this.state.article_delete);
 				// call the deleteArticle function and pass the article
 				helpers.deleteArticle(this.state.article_delete);
 
