@@ -92,11 +92,13 @@ app.post('/api/', function(req, res) {
 	var article = req.body;
 
 	// insert the article into the db
-	db.articles.insert(article, function(err) {
+	db.articles.insert(article, function(err, docs) {
 
 		if (err) throw err;
 
 		console.log('saved to db');
+
+		res.send(docs);
 
 	}); // end db.articles.insert()
 
@@ -108,12 +110,16 @@ app.post('/api/delete/', function(req, res) {
 	// save the article object which has the article id to the variable
 	var article = req.body;
 
+	console.log(article);
+
 	// had to use .remove() instead of .deleteOne() but not sure why.
 	db.articles.remove({"_id": (mongojs.ObjectId(article.article_id))}, function(err, docs) {
 		
 		if (err) throw err;
 
 		console.log('article deleted');
+
+		res.send(docs);
 
 	}); // end db.articles.remove()
 
