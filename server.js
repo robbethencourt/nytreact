@@ -45,9 +45,9 @@ app.use(express.static('./public'));
 // -------------------------------------------------
 
 // Database
-
+mongodb://heroku_r819n229:2mek2it4hst2n6j5j4g6i798i@ds153835.mlab.com:53835/heroku_r819n229
 // MongoDB Configuration configuration (Change this URL to your own DB)
-var databaseUrl = 'nytreact';
+var databaseUrl = 'mongodb://heroku_r819n229:2mek2it4hst2n6j5j4g6i798i@ds153835.mlab.com:53835/heroku_r819n229'; //nytreact
 var collections = ["articles"];
 
 // use mongojs to hook the database to the db variable 
