@@ -1,3 +1,5 @@
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 module.exports = {
   
   // This code will be compiled 
@@ -22,10 +24,15 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'sass'],
-        include:  
+        loader: "style!css!sass"
+        // loader: ExtractTextPlugin.extract('css!sass')  
       }
     ]
   }
+  // plugins: [
+  //   new ExtractTextPlugin('public/style.css', {
+  //     allChunks: true
+  //   })
+  // ]
 
 }
